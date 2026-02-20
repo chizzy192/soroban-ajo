@@ -2,6 +2,7 @@ import '@/styles/index.css'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
+import { AuthProvider } from './context/AuthContext
 import { ThemeProvider } from '@/context/ThemeContext'
 import '@/styles/variables.css'
 import '@/styles/themes.css'
@@ -9,7 +10,10 @@ import '@/styles/themes.css'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider>
-      <App />
+      <AuthProvider>
+        <App />
+      <AuthProvider>
     </ThemeProvider>
+
   </React.StrictMode>,
 )

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import { WalletConnector } from '@/components/WalletConnector'
+import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { DashboardLayout } from '@/components/DashboardLayout'
 import { GroupCreationForm } from '@/components/GroupCreationForm'
 import { GroupsList } from '@/components/GroupsList'
@@ -11,11 +12,43 @@ import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { Tutorial } from '@/components/Tutorial'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { Explore } from '@/pages/Explore'
+import { Login } from '@/pages/Login'
+import { useAuthContext } from '@/context/AuthContext'
 
 type ViewType = 'dashboard' | 'create' | 'detail' | 'analytics' | 'responsive' | 'explore'
 
 function App() {
   const [currentView, setCurrentView] = useState<ViewType>('dashboard')
+  const { isAuthenticated, isLoading } = useAuthContext()
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+          <p className="text-gray-600">Loading Soroban Ajo…</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <header className="bg-white shadow">
+          <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-2xl font-bold text-blue-600">Soroban Ajo</h1>
+                <p className="text-sm text-gray-600">Decentralized Rotational Savings</p>
+              </div>
+            </div>
+          </nav>
+        </header>
+        <Login />
+      </div>
+    )
+  }
 
   return (
     <>
@@ -86,26 +119,28 @@ function App() {
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <ErrorBoundary>
-            {currentView === 'dashboard' && (
-              <div className="space-y-8">
-                <DashboardLayout />
-                <GroupsList groups={[]} />
-              </div>
-            )}
+            <ProtectedRoute>
+              {currentView === 'dashboard' && (
+                <div className="space-y-8">
+                  <DashboardLayout />
+                  <GroupsList groups={[]} />
+                </div>
+              )}
 
-            {currentView === 'create' && (
-              <div className="flex justify-center">
-                <GroupCreationForm />
-              </div>
-            )}
+              {currentView === 'create' && (
+                <div className="flex justify-center">
+                  <GroupCreationForm />
+                </div>
+              )}
 
-            {currentView === 'detail' && <GroupDetailPage groupId="group-1" />}
+              {currentView === 'detail' && <GroupDetailPage groupId="group-1" />}
 
-            {currentView === 'analytics' && <GroupAnalytics />}
+              {currentView === 'analytics' && <GroupAnalytics />}
 
-            {currentView === 'responsive' && <ResponsiveLayout />}
+              {currentView === 'responsive' && <ResponsiveLayout />}
 
-            {currentView === 'explore' && <Explore />}
+              {currentView === 'explore' && <Explore />}
+            </ProtectedRoute>
           </ErrorBoundary>
         </main>
 

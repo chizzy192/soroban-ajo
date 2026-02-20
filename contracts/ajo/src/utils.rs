@@ -39,6 +39,8 @@ pub fn validate_group_params(
     duration: u64,
     max_members: u32,
 ) -> Result<(), crate::errors::AjoError> {
+    const MAX_MEMBERS_LIMIT: u32 = 100;
+    
     // Amounts must be positive
     if amount == 0 {
         return Err(crate::errors::AjoError::ContributionAmountZero);
@@ -56,5 +58,24 @@ pub fn validate_group_params(
         return Err(crate::errors::AjoError::MaxMembersBelowMinimum);
     }
     
+    // Reasonable upper limit to prevent gas issues
+    if max_members > MAX_MEMBERS_LIMIT {
+        return Err(crate::errors::AjoError::MaxMembersAboveLimit);
+    }
+    
     Ok(())
 }
+
+/// Get cycle start and end timestamps
+pub fn get_cycle_window(group: &Group, current_time: u64) -> (u64, u64) {
+    let cycle_start = group.cycle_start_time;
+    let cycle_end = cycle_start + group.cycle_duration;
+    (cycle_start, cycle_end)
+}
+
+/// Check if current time is within the active cycle window
+pub fn is_within_cycle_window(group: &Group, current_time: u64) -> bool {
+    let (cycle_start, cycle_end) = get_cycle_window(group, current_time);
+    current_time >= cycle_start && current_time < cycle_end
+}
+

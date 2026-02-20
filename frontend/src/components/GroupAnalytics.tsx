@@ -6,6 +6,19 @@ interface GroupAnalyticsProps {
   members?: Member[]
   isLoading?: boolean
 }
+// TASK: IMPORTED RECHARTS COMPONENTS (#54)
+import { 
+  ResponsiveContainer, 
+  AreaChart, 
+  Area, 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend 
+} from 'recharts'
 
 interface PerformanceMetric {
   label: string
@@ -196,6 +209,23 @@ export const GroupAnalytics: React.FC<GroupAnalyticsProps> = ({
     { label: 'Average Contribution', value: averageContribution, suffix: '$' },
   ]
 
+  // TASK: ADDED DUMMY DATA FOR THE CHARTS TO RENDER (#54)
+  const trendData = [
+    { name: 'Jan', amount: 4000 },
+    { name: 'Feb', amount: 3000 },
+    { name: 'Mar', amount: 5000 },
+    { name: 'Apr', amount: 4500 },
+    { name: 'May', amount: 6000 },
+    { name: 'Jun', amount: 5500 },
+  ]
+
+  const timelineData = [
+    { name: 'Week 1', completed: 4, pending: 2 },
+    { name: 'Week 2', completed: 3, pending: 4 },
+    { name: 'Week 3', completed: 5, pending: 1 },
+    { name: 'Week 4', completed: 2, pending: 3 },
+  ]
+
   return (
     <div className="space-y-6">
       <div>
@@ -280,6 +310,60 @@ export const GroupAnalytics: React.FC<GroupAnalyticsProps> = ({
                 </div>
               </div>
             ))}
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-xl font-bold mb-4">Contribution Trends</h3>
+          {/* Note: I removed the flex justify-center classes from this specific div so Recharts can expand properly */}
+          <div className="h-64 bg-gray-50 rounded pt-4 pr-4">
+            {/* TASK: IMPLEMENTED AREA CHART WITH CSS VARIABLES AND TOOLTIP STYLING (#54) */}
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={trendData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--chart-primary)" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="var(--chart-primary)" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid-line)" vertical={false} />
+                <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 12 }} axisLine={false} tickLine={false} dy={10} />
+                <YAxis tick={{ fill: '#64748b', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'var(--chart-tooltip-bg)', 
+                    borderColor: 'var(--chart-tooltip-border)', 
+                    color: 'var(--chart-tooltip-text)',
+                    borderRadius: '8px' 
+                  }} 
+                />
+                <Area type="monotone" dataKey="amount" stroke="var(--chart-primary)" fillOpacity={1} fill="url(#colorAmount)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-xl font-bold mb-4">Payout Timeline</h3>
+          {/* Note: Removed flex justify-center here as well so Recharts fills the container */}
+          <div className="h-64 bg-gray-50 rounded pt-4 pr-4">
+            {/* TASK: IMPLEMENTED BAR CHART WITH CSS VARIABLES, SPACING, AND LEGEND (#54) */}
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={timelineData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid-line)" vertical={false} />
+                <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 12 }} axisLine={false} tickLine={false} dy={10} />
+                <YAxis tick={{ fill: '#64748b', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <Tooltip 
+                  cursor={{ fill: 'transparent' }}
+                  contentStyle={{ 
+                    backgroundColor: 'var(--chart-tooltip-bg)', 
+                    borderColor: 'var(--chart-tooltip-border)', 
+                    color: 'var(--chart-tooltip-text)',
+                    borderRadius: '8px' 
+                  }} 
+                />
+                <Legend wrapperStyle={{ paddingTop: '10px' }} iconType="circle" />
+                <Bar dataKey="completed" fill="var(--chart-primary)" radius={[4, 4, 0, 0]} name="Completed" />
+                <Bar dataKey="pending" fill="var(--chart-secondary)" radius={[4, 4, 0, 0]} name="Pending" />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>

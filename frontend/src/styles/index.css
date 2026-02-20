@@ -15,6 +15,27 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* --- Issue #54: Chart Color Tokens & Tooltip Styling --- */
+  --chart-primary: #6366f1;   /* Indigo */
+  --chart-secondary: #8b5cf6; /* Violet */
+  --chart-tertiary: #ec4899;  /* Pink */
+  --chart-quaternary: #14b8a6; /* Teal */
+  
+  --chart-tooltip-bg: #ffffff;
+  --chart-tooltip-border: #e2e8f0;
+  --chart-tooltip-text: #1e293b;
+  --chart-grid-line: #f1f5f9;
+}
+
+/* Dark mode overrides for charts */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --chart-tooltip-bg: #1e293b;
+    --chart-tooltip-border: #334155;
+    --chart-tooltip-text: #f8fafc;
+    --chart-grid-line: #334155;
+  }
 }
 
 a {
@@ -106,5 +127,48 @@ button:focus-visible {
 
   .card-hover-glow {
     @apply transition-shadow duration-200 hover:shadow-2xl hover:shadow-blue-100;
+  }
+}
+
+/* --- Issue #62: Loading Skeletons & Spinners --- */
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  background: #f6f7f8;
+  background: linear-gradient(to right, #e2e8f0 8%, #cbd5e1 18%, #e2e8f0 33%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+  border-radius: 0.5rem;
+}
+
+/* Dark mode support for skeletons */
+@media (prefers-color-scheme: dark) {
+  .skeleton {
+    background: #1e293b;
+    background: linear-gradient(to right, #1e293b 8%, #334155 18%, #1e293b 33%);
+    background-size: 1000px 100%;
+  }
+}
+
+.spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #6366f1;
+  animation: spin 1s ease-in-out infinite;
+  width: 24px;
+  height: 24px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
