@@ -203,6 +203,20 @@ export const useWallet = () => {
 </div>
 ```
 
+### Theming System
+The frontend uses a centralized theming system located in `src/context/ThemeContext.tsx`.
+
+### How to use
+To access the current theme or toggle it within a component:
+```typescript
+import { useTheme } from '@/hooks/useTheme';
+
+const MyComponent = () => {
+  const { mode, toggleTheme } = useTheme();
+  return <button onClick={toggleTheme}>Current: {mode}</button>;
+}
+```
+
 ### Custom Colors
 
 The project uses custom Tailwind theme colors matching the Ajo brand:
