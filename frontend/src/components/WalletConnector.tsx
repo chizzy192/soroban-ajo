@@ -1,11 +1,5 @@
 import React, { useState } from 'react'
-import { useTheme } from '@/hooks/useTheme'
-
-export const WalletConnector: React.FC = () => {
-  const { resolvedTheme } = useTheme()
-  const [connected, setConnected] = useState(false)
-  const [address, setAddress] = useState('')
-import { useAuthContext } from '../context/AuthContext'
+import { useAuthContext } from '@/context/AuthContext'
 
 export const WalletConnector: React.FC = () => {
   const { isAuthenticated, isLoading, address, network, login, logout, logoutAllDevices } = useAuthContext()
@@ -90,5 +84,5 @@ export const WalletConnector: React.FC = () => {
         </>
       )}
     </div>
-  );
-};
+  )
+}
